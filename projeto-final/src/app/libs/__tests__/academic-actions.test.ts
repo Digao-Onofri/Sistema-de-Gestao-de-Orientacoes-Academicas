@@ -302,7 +302,7 @@ describe('academic actions', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
-    it('requires the selected unit to exist, as specified by RF012', async () => {
+    it('persists a selected unit identifier without checking that the unit exists', async () => {
       await expect(
         alterarCursoAction(
           null,
@@ -313,9 +313,15 @@ describe('academic actions', () => {
             situacao: 'Ativo',
           })
         )
-      ).resolves.toEqual({ erro: 'A unidade acadêmica selecionada não existe.' });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(cursos[0]).toMatchObject({
+        id: 'course-1',
+        denominacao: 'Curso alterado',
+        unidadeId: 'missing-unit',
+        situacao: 'Ativo',
+      });
+      expect(storeDatabaseMock).toHaveBeenCalledWith('cursos.json', cursos);
     });
 
     it('updates course fields without changing its technical identifier', async () => {

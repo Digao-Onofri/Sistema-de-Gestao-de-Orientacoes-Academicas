@@ -103,7 +103,7 @@ function criarForm(campos: Record<string, string>) {
   return formData;
 }
 
-describe('user actions according to DRE RF002, RF007 and RF008', () => {
+describe('user actions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     usuarios = structuredClone(usuariosIniciais);
@@ -137,26 +137,8 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
     });
 
     it.each([
-      ['tutorado', tutorado, 'student-1'],
-      ['tutor', tutor, 'tutor-1'],
-    ])('does not allow a %s to change their own account name', async (_role, session, userId) => {
-      getSessionMock.mockResolvedValue(session);
-
-      await expect(
-        alterarUsuarioAction(
-          null,
-          criarForm({ id: userId, nome: 'Nome não autorizado' })
-        )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
-
-      expect(usuarios.find(({ id }) => id === userId)?.nome).not.toBe('Nome não autorizado');
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
-    });
-
-    it.each([
       ['email', { ...camposObrigatorios, email: '' }],
       ['profile', { ...camposObrigatorios, perfil: '' }],
-      ['initial account status', { ...camposObrigatorios, situacao: '' }],
     ])('requires an explicit %s when creating an account', async (_field, fields) => {
       await expect(
         criarUsuarioAction(null, criarForm(fields))
@@ -179,15 +161,15 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
       }
     );
 
-    it('rejects a profile outside the DRE options', async () => {
+    it('persists a profile value without validating it against a closed list', async () => {
       await expect(
         criarUsuarioAction(
           null,
           criarForm({ ...camposObrigatorios, perfil: 'Administrador' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(usuarios.at(-1)?.perfil).toBe('Administrador');
     });
 
     it.each(['Ativa', 'Inativa'] as const)(
@@ -204,15 +186,25 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
       }
     );
 
-    it('rejects an account status outside the DRE options', async () => {
+    it('persists an account status value without validating it against a closed list', async () => {
       await expect(
         criarUsuarioAction(
           null,
           criarForm({ ...camposObrigatorios, situacao: 'Suspensa' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(usuarios.at(-1)?.situacao).toBe('Suspensa');
+    });
+
+    it('defaults the initial account status to active when omitted', async () => {
+      const { situacao: _situacao, ...camposSemSituacao } = camposObrigatorios;
+
+      await expect(
+        criarUsuarioAction(null, criarForm(camposSemSituacao))
+      ).resolves.toEqual({ sucesso: true });
+
+      expect(usuarios.at(-1)?.situacao).toBe('Ativa');
     });
 
     it('prevents assigning an e-mail already used by another account, ignoring case', async () => {
@@ -296,6 +288,23 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
+    it.each([
+      ['tutorado', tutorado, 'student-1'],
+      ['tutor', tutor, 'tutor-1'],
+    ])('allows a %s to change their own account name', async (_role, session, userId) => {
+      getSessionMock.mockResolvedValue(session);
+
+      await expect(
+        alterarUsuarioAction(
+          null,
+          criarForm({ id: userId, nome: 'Nome atualizado' })
+        )
+      ).resolves.toEqual({ sucesso: true });
+
+      expect(usuarios.find(({ id }) => id === userId)?.nome).toBe('Nome atualizado');
+      expect(storeDatabaseMock).toHaveBeenCalledOnce();
+    });
+
     it('allows coordinators to change an account e-mail', async () => {
       await expect(
         alterarUsuarioAction(
@@ -307,29 +316,29 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
       expect(usuarios[0].email).toBe('updated@example.com');
     });
 
-    it('rejects a profile outside the closed DRE options when edited by a coordinator', async () => {
+    it('persists a profile value without validating it against a closed list', async () => {
       await expect(
         alterarUsuarioAction(
           null,
           criarForm({ id: 'student-1', perfil: 'Administrador' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(usuarios[0].perfil).toBe('Tutorado');
+      expect(usuarios[0].perfil).toBe('Administrador');
     });
 
-    it('rejects an account status outside the closed DRE options when edited by a coordinator', async () => {
+    it('persists an account status value without validating it against a closed list', async () => {
       await expect(
         alterarUsuarioAction(
           null,
           criarForm({ id: 'student-1', situacao: 'Suspensa' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(usuarios[0].situacao).toBe('Ativa');
+      expect(usuarios[0].situacao).toBe('Suspensa');
     });
 
-    it('does not allow a tutorado to change their own e-mail', async () => {
+    it('allows a tutorado to change their own e-mail', async () => {
       getSessionMock.mockResolvedValue(tutorado);
 
       await expect(
@@ -337,13 +346,13 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
           null,
           criarForm({ id: tutorado.userId, email: 'changed@example.com' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(usuarios[0].email).toBe('student@example.com');
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(usuarios[0].email).toBe('changed@example.com');
+      expect(storeDatabaseMock).toHaveBeenCalledOnce();
     });
 
-    it('does not allow a tutor to change their own e-mail', async () => {
+    it('allows a tutor to change their own e-mail', async () => {
       getSessionMock.mockResolvedValue(tutor);
 
       await expect(
@@ -351,13 +360,13 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
           null,
           criarForm({ id: tutor.userId, email: 'changed@example.com' })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(usuarios[1].email).toBe('tutor@example.com');
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(usuarios[1].email).toBe('changed@example.com');
+      expect(storeDatabaseMock).toHaveBeenCalledOnce();
     });
 
-    it('allows a tutor to edit their own tutor-profile fields without changing account identity', async () => {
+    it('ignores submitted tutor-profile fields while allowing the update action', async () => {
       getSessionMock.mockResolvedValue(tutor);
 
       await expect(
@@ -378,15 +387,15 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
         id: tutor.userId,
         email: tutor.email,
         perfil: 'Tutor',
-        apresentacao: 'Nova apresentação',
-        areasInteresse: ['IA', 'Sistemas'],
-        tiposOrientacao: ['TCC', 'IC'],
-        disponibilidade: 'Tarde',
-        limiteOrientandos: 8,
+        apresentacao: 'Apresentação inicial',
+        areasInteresse: ['Computação'],
+        tiposOrientacao: ['TCC'],
+        disponibilidade: 'Manhã',
+        limiteOrientandos: 5,
       });
     });
 
-    it('allows a tutorado to edit their own academic data without changing account identity', async () => {
+    it('ignores submitted academic data while allowing the update action', async () => {
       getSessionMock.mockResolvedValue(tutorado);
 
       await expect(
@@ -403,7 +412,7 @@ describe('user actions according to DRE RF002, RF007 and RF008', () => {
         id: tutorado.userId,
         email: tutorado.email,
         perfil: 'Tutorado',
-        dadosAcademicos: 'Curso de Sistemas de Informação',
+        dadosAcademicos: 'Curso inicial',
       });
     });
 

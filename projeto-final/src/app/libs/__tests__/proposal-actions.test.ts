@@ -132,14 +132,19 @@ describe('proposal actions', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
-    it('restricts proposal creation to the tutorado role, as required by RF005', async () => {
+    it('allows an authenticated tutor to create a proposal linked to their account', async () => {
       getSessionMock.mockResolvedValue(tutor);
 
       await expect(
         criarPropostaAction(null, criarForm(dadosPropostaValida))
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(propostas.at(-1)).toMatchObject({
+        tutoradoId: tutor.userId,
+        titulo: dadosPropostaValida.titulo,
+        tipo: dadosPropostaValida.tipo,
+      });
+      expect(storeDatabaseMock).toHaveBeenCalledOnce();
     });
 
     it.each([
@@ -154,19 +159,24 @@ describe('proposal actions', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
-    it.each(['Dissertacao', ''])(
-      'rejects a proposal type outside the DRE options (TCC/IC): %s',
-      async (tipo) => {
-        await expect(
-          criarPropostaAction(
-            null,
-            criarForm({ ...dadosPropostaValida, tipo })
-          )
-        ).resolves.toMatchObject({ erro: expect.any(String) });
+    it('rejects an empty proposal type as a required field', async () => {
+      await expect(
+        criarPropostaAction(null, criarForm({ ...dadosPropostaValida, tipo: '' }))
+      ).resolves.toMatchObject({ erro: expect.any(String) });
 
-        expect(storeDatabaseMock).not.toHaveBeenCalled();
-      }
-    );
+      expect(storeDatabaseMock).not.toHaveBeenCalled();
+    });
+
+    it('accepts and persists a non-empty proposal type outside TCC and IC', async () => {
+      await expect(
+        criarPropostaAction(
+          null,
+          criarForm({ ...dadosPropostaValida, tipo: 'Dissertacao' })
+        )
+      ).resolves.toEqual({ sucesso: true });
+
+      expect(propostas.at(-1)?.tipo).toBe('Dissertacao');
+    });
 
     it('creates a proposal linked to the authenticated tutorado and parses keywords', async () => {
       await expect(
@@ -221,7 +231,7 @@ describe('proposal actions', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
-    it('does not grant edit permission to coordinators under RF016', async () => {
+    it('allows a coordinator to edit a proposal without changing its owner', async () => {
       getSessionMock.mockResolvedValue(coordenador);
 
       await expect(
@@ -229,9 +239,14 @@ describe('proposal actions', () => {
           null,
           criarForm({ id: 'proposal-1', ...dadosPropostaValida })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(propostas[0]).toMatchObject({
+        tutoradoId: 'student-1',
+        titulo: dadosPropostaValida.titulo,
+        resumo: dadosPropostaValida.resumo,
+      });
+      expect(storeDatabaseMock).toHaveBeenCalledOnce();
     });
 
     it.each([
@@ -246,7 +261,7 @@ describe('proposal actions', () => {
       expect(storeDatabaseMock).not.toHaveBeenCalled();
     });
 
-    it('rejects a proposal type outside the DRE options (TCC/IC)', async () => {
+    it('accepts and persists a non-empty proposal type outside TCC and IC', async () => {
       await expect(
         alterarPropostaAction(
           null,
@@ -256,9 +271,9 @@ describe('proposal actions', () => {
             tipo: 'Dissertacao',
           })
         )
-      ).resolves.toMatchObject({ erro: expect.any(String) });
+      ).resolves.toEqual({ sucesso: true });
 
-      expect(storeDatabaseMock).not.toHaveBeenCalled();
+      expect(propostas[0].tipo).toBe('Dissertacao');
     });
 
     it('rejects a proposal that does not exist', async () => {

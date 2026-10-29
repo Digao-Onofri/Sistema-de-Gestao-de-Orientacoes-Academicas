@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+const DATA_DIR = process.env.SGOA_DATA_DIR
+  ? path.resolve(process.env.SGOA_DATA_DIR)
+  : path.join(process.cwd(), 'data');
 
 const ConexaoBD = {
   retornaDB<T>(arquivo: string): T[] {
