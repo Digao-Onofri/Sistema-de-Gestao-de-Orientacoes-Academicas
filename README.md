@@ -68,6 +68,69 @@ Antes de começar, verifique os requisitos definidos para a implementação do p
 
 > **Observação:** os comandos específicos de instalação, configuração e execução devem ser atualizados conforme as tecnologias e a estrutura reais do repositório.
 
+## Testes
+
+Os testes automatizados ficam no diretório `projeto-final`. Antes de executá-los, instale as dependências do projeto:
+
+```bash
+cd projeto-final
+npm install
+```
+
+### Testes unitários — Vitest
+
+Para executar todos os testes unitários:
+
+```bash
+npm test -- --run
+```
+
+Os testes unitários estão em `projeto-final/src/app/libs/__tests__` e `projeto-final/src/app/components`. Para executar uma suíte específica:
+
+```bash
+npx vitest run src/app/libs/__tests__/user-actions.test.ts
+```
+
+### Testes E2E — Playwright
+
+Os testes E2E simulam interações com o sistema em Chromium. Na primeira execução, instale o navegador do Playwright:
+
+```bash
+npx playwright install chromium
+```
+
+Em Linux, se faltarem bibliotecas de sistema para o navegador, instale também as dependências do Chromium:
+
+```bash
+npx playwright install-deps chromium
+```
+
+Execute toda a suíte E2E:
+
+```bash
+npm run test:e2e -- --project=chromium
+```
+
+Para executar um arquivo de teste específico:
+
+```bash
+npm run test:e2e -- --project=chromium e2e/auth.spec.ts
+```
+
+Para abrir o navegador e acompanhar as interações:
+
+```bash
+npm run test:e2e -- --project=chromium --headed
+```
+
+Também é possível desacelerar as ações para acompanhar melhor a execução:
+
+```bash
+E2E_SLOW_MO=300 npm run test:e2e -- --project=chromium --headed
+```
+
+O Playwright inicia o servidor local automaticamente. Os testes usam arquivos de dados temporários isolados, removidos ao final da execução; não utilizam os dados reais da aplicação.
+
 ## Requisitos e segurança
 
 O projeto considera requisitos de segurança, confiabilidade e usabilidade, incluindo:
