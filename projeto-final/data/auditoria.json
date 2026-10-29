@@ -88,5 +88,14 @@
     "entidade": "Autenticacao",
     "tipoAcao": "LOGIN",
     "detalhes": "Login efetuado com sucesso"
+  },
+  {
+    "id": "218d6b73-fa0d-45cc-bd8e-83c56f675736",
+    "dataHora": "2026-10-29T19:41:09.459Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Autenticacao",
+    "tipoAcao": "LOGIN",
+    "detalhes": "Login efetuado com sucesso"
   }
 ]
