@@ -1,0 +1,92 @@
+[
+  {
+    "id": "9c9262ff-b537-4d8c-949a-0112bd466183",
+    "dataHora": "2026-10-29T02:16:26.680Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Usuario",
+    "tipoAcao": "CRIACAO",
+    "detalhes": "Usuário jaum@teste.com.br criado com perfil Tutor"
+  },
+  {
+    "id": "9f1a5ccf-9d5b-4bd2-85ac-530bbb64e602",
+    "dataHora": "2026-10-29T02:17:06.104Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "PropostaAcademica",
+    "tipoAcao": "CRIACAO",
+    "detalhes": "Proposta \"ai ze da manga\" (IC) criada."
+  },
+  {
+    "id": "f5664d2d-8398-4107-a06b-b6df46eb1961",
+    "dataHora": "2026-10-29T02:18:06.620Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "PeriodoLetivo",
+    "tipoAcao": "CRIACAO",
+    "detalhes": "Período letivo 2026/1 criado."
+  },
+  {
+    "id": "3e99f95d-de1c-49a6-b488-15960ed822a0",
+    "dataHora": "2026-10-29T02:17:29.070Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "UnidadeAcademica",
+    "tipoAcao": "CRIACAO",
+    "detalhes": "Unidade imc criada."
+  },
+  {
+    "id": "0a191539-63dd-4270-afc4-29e7559cd800",
+    "dataHora": "2026-10-29T02:17:43.534Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Curso",
+    "tipoAcao": "CRIACAO",
+    "detalhes": "Curso sistemas criado com situação Inativo."
+  },
+  {
+    "id": "7afa27f3-157a-4483-bbb7-fd304a10fa82",
+    "dataHora": "2026-10-29T02:18:21.359Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Usuario",
+    "tipoAcao": "EXCLUSAO",
+    "detalhes": "Usuário jaum@teste.com.br removido do sistema."
+  },
+  {
+    "id": "c2882449-7943-4a46-b991-e80e74c863da",
+    "dataHora": "2026-10-29T02:18:36.127Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Curso",
+    "tipoAcao": "EXCLUSAO",
+    "detalhes": "Curso sistemas excluído."
+  },
+  {
+    "id": "2b37e33a-b333-48c1-a814-0d1d46a79901",
+    "dataHora": "2026-10-29T02:18:39.834Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "UnidadeAcademica",
+    "tipoAcao": "EXCLUSAO",
+    "detalhes": "Unidade imc excluída."
+  },
+  {
+    "id": "2754ea1b-35f8-4b56-adef-16e443178b18",
+    "dataHora": "2026-10-29T02:18:50.617Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "PropostaAcademica",
+    "tipoAcao": "EXCLUSAO",
+    "detalhes": "Proposta \"ai ze da manga\" excluída."
+  },
+  {
+    "id": "4e441ece-e0e2-4436-b053-4b12172e9cb1",
+    "dataHora": "2026-10-29T02:19:45.576Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Autenticacao",
+    "tipoAcao": "LOGIN",
+    "detalhes": "Login efetuado com sucesso"
+  }
+]
