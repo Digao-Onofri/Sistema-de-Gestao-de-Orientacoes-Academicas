@@ -11,12 +11,12 @@
   "dependencies": {
     "bcrypt": "npm:bcryptjs@^2.4.3",
     "jose": "^5.9.6",
-    "next": "15.1.4",
+    "next": "^16.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "uuid": "^11.0.5",
-    "zod": "^3.24.1"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
