@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "demo": "playwright test -c playwright.apresentacao.config.ts --project=apresentacao",
+    "demo:manual": "playwright test -c playwright.apresentacao.config.ts --project=apresentacao-manual",
+    "e2e:relatorio": "playwright show-report"
   },
   "dependencies": {
     "bcrypt": "npm:bcryptjs@^2.4.3",
