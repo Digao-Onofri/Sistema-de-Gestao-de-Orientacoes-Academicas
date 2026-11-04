@@ -20,7 +20,7 @@ export default async function PeriodosPage() {
             Períodos Letivos
           </h1>
           <p className="text-sm text-slate-500">
-            Cadastro e manutenção dos períodos acadêmicos para ciclos de orientação (RF013 / RF014)
+            Cadastro e manutenção dos períodos acadêmicos para ciclos de orientação
           </p>
         </div>
 

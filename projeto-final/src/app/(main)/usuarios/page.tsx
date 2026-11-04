@@ -46,7 +46,7 @@ export default async function UsuariosPage(props: UsuariosPageProps) {
             Usuários Cadastrados
           </h1>
           <p className="text-sm text-slate-500">
-            Controle de perfis, permissões e situação de contas (RF002 / RF008 / RF009)
+            Controle de perfis, permissões e situação de contas
           </p>
         </div>
 

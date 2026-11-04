@@ -24,7 +24,7 @@ export default function EditPropostaForm({ proposta }: { proposta: PropostaAcade
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Editar Proposta Acadêmica</h1>
           <p className="text-sm text-slate-500">
-            Alteração de título, modalidade, resumo e palavras-chave (RF016)
+            Alteração de título, modalidade, resumo e palavras-chave
           </p>
         </div>
         <Link

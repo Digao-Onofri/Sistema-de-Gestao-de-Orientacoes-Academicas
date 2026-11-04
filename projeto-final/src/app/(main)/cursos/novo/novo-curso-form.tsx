@@ -72,7 +72,7 @@ export default function NovoCursoForm({
 
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          Situação do Curso (RF011)
+          Situação do Curso
         </label>
         <select
           name="situacao"

@@ -30,7 +30,7 @@ export default function EditCursoForm({
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Editar Curso</h1>
           <p className="text-sm text-slate-500">
-            Atualização de denominação, unidade e situação (RF012)
+            Atualização de denominação, unidade e situação
           </p>
         </div>
         <Link
@@ -83,7 +83,7 @@ export default function EditCursoForm({
 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">
-            Situação do Curso (RF012)
+            Situação do Curso
           </label>
           <select
             name="situacao"

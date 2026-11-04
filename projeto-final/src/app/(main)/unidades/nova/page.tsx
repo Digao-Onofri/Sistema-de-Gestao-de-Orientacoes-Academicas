@@ -23,7 +23,7 @@ export default function NovaUnidadePage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Nova Unidade Acadêmica</h1>
           <p className="text-sm text-slate-500">
-            Cadastrar departamento ou instituto de vinculação (RF003)
+            Cadastrar departamento ou instituto de vinculação
           </p>
         </div>
         <Link

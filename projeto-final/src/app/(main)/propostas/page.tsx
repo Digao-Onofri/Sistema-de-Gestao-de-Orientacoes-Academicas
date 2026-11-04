@@ -29,7 +29,7 @@ export default async function PropostasPage() {
             Propostas Acadêmicas (TCC / IC)
           </h1>
           <p className="text-sm text-slate-500">
-            Registro e gerenciamento de temas e propostas de pesquisa (RF005 / RF016)
+            Registro e gerenciamento de temas e propostas de pesquisa
           </p>
         </div>
 

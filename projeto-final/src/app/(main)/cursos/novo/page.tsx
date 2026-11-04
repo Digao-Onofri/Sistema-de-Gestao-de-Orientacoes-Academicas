@@ -12,7 +12,7 @@ export default async function NovoCursoPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Novo Curso</h1>
           <p className="text-sm text-slate-500">
-            Cadastrar curso e vincular à sua respectiva unidade acadêmica (RF011)
+            Cadastrar curso e vincular à sua respectiva unidade acadêmica
           </p>
         </div>
         <Link

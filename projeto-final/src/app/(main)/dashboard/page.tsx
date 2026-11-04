@@ -81,19 +81,19 @@ export default async function DashboardPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-600 mt-3">
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <strong className="text-slate-800">1. Gestão de Usuários (RF002 / RF007 / RF008 / RF009):</strong>
+            <strong className="text-slate-800">1. Gestão de Usuários:</strong>
             <p className="mt-1 text-xs">Criação, edição, listagem com filtros e exclusão com proteção contra auto-remoção.</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <strong className="text-slate-800">2. Cursos & Unidades (RF003 / RF010 / RF011 / RF012):</strong>
+            <strong className="text-slate-800">2. Cursos & Unidades:</strong>
             <p className="mt-1 text-xs">Estrutura departamental, vinculação de cursos, inativação e exclusão com integridade referencial.</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <strong className="text-slate-800">3. Períodos Letivos (RF013 / RF014):</strong>
+            <strong className="text-slate-800">3. Períodos Letivos:</strong>
             <p className="mt-1 text-xs">Cadastro e controle de semestres letivos (ex: 2026/1, 2026/2) para ciclos acadêmicos.</p>
           </div>
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <strong className="text-slate-800">4. Propostas Acadêmicas (RF005 / RF016):</strong>
+            <strong className="text-slate-800">4. Propostas Acadêmicas:</strong>
             <p className="mt-1 text-xs">Cadastro de temas de pesquisa TCC e IC com título, resumo, palavras-chave e modalidade.</p>
           </div>
         </div>

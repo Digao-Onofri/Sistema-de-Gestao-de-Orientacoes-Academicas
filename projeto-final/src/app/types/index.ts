@@ -3,7 +3,7 @@ export type SituacaoConta = 'Ativa' | 'Inativa';
 export type TipoOrientacao = 'TCC' | 'IC';
 export type SituacaoCurso = 'Ativo' | 'Inativo';
 export type SituacaoCiclo = 'Rascunho' | 'Publicado' | 'Aberto' | 'Encerrado' | 'Cancelado';
-export type SituacaoSolicitacao = 'Pendente' | 'Aceita' | 'Recusada' | 'AguardandoComplementacao';
+export type SituacaoSolicitacao = 'Pendente' | 'Aceita' | 'Recusada' | 'AguardandoComplementacao' | 'Cancelada';
 export type SituacaoAlocacao = 'Ativa' | 'Encerrada' | 'Cancelada';
 export type SituacaoEtapa = 'Pendente' | 'EmAndamento' | 'Concluida' | 'Atrasada';
 

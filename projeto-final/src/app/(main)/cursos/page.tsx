@@ -25,7 +25,7 @@ export default async function CursosPage() {
             Estrutura Acadêmica: Cursos e Unidades
           </h1>
           <p className="text-sm text-slate-500">
-            Gerenciamento de cursos ofertados e unidades vinculadas (RF003 / RF011 / RF012)
+            Gerenciamento de cursos ofertados e unidades vinculadas
           </p>
         </div>
 

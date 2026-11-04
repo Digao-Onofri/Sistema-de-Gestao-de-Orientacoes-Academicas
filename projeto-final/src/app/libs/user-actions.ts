@@ -11,7 +11,7 @@ import type { Usuario, Perfil, SituacaoConta } from '../types';
 export async function criarUsuarioAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem incluir novos usuários (RF002).' };
+    return { erro: 'Apenas coordenadores podem incluir novos usuários.' };
   }
 
   const nome = (formData.get('nome') as string)?.trim();

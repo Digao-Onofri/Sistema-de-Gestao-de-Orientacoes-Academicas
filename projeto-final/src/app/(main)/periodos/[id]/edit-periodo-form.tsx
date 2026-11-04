@@ -24,7 +24,7 @@ export default function EditPeriodoForm({ periodo }: { periodo: PeriodoLetivo })
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Editar Período Letivo</h1>
           <p className="text-sm text-slate-500">
-            Atualização de identificação sem perda de vínculos históricos (RF014)
+            Atualização de identificação sem perda de vínculos históricos
           </p>
         </div>
         <Link

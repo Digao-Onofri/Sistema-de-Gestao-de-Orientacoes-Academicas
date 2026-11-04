@@ -19,7 +19,7 @@ export async function criarPropostaAction(prevState: any, formData: FormData) {
   const tipo = formData.get('tipo') as TipoOrientacao;
 
   if (!titulo || !resumo || !tipo) {
-    return { erro: 'Título, resumo e tipo da proposta são obrigatórios (RF005).' };
+    return { erro: 'Título, resumo e tipo da proposta são obrigatórios.' };
   }
 
   const palavrasChave = palavrasChaveRaw
@@ -64,7 +64,7 @@ export async function alterarPropostaAction(prevState: any, formData: FormData) 
   const tipo = formData.get('tipo') as TipoOrientacao;
 
   if (!titulo || !resumo || !tipo) {
-    return { erro: 'Título, resumo e tipo da proposta são obrigatórios (RF016).' };
+    return { erro: 'Título, resumo e tipo da proposta são obrigatórios.' };
   }
 
   const propostas = ConexaoBD.retornaDB<PropostaAcademica>('propostas.json');

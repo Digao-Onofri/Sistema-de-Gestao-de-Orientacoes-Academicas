@@ -35,29 +35,32 @@ export default async function MainLayout({
               href="/usuarios"
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white"
             >
-              👥 Usuários (RF002/09)
+              👥 Usuários
             </Link>
 
             <Link
               href="/cursos"
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white"
             >
-              🎓 Cursos & Unidades (RF011/12)
+              🎓 Cursos & Unidades
             </Link>
 
             <Link
               href="/periodos"
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white"
             >
-              📅 Períodos Letivos (RF013/14)
+              📅 Períodos Letivos
             </Link>
 
             <Link
               href="/propostas"
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white"
             >
-              📝 Propostas TCC / IC (RF005/16)
+              📝 Propostas TCC / IC
             </Link>
+            {session?.perfil !== 'Tutor' && <Link href="/ciclos" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📆 Ciclos de orientação</Link>}
+            <Link href="/solicitacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📨 Solicitações de orientação</Link>
+            {session?.perfil === 'Coordenador' && <Link href="/relatorio-solicitacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📋 Relatório de solicitações</Link>}
           </nav>
         </div>
 

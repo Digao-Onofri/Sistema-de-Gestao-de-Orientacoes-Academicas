@@ -23,7 +23,7 @@ export default function NovoUsuarioPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Novo Usuário</h1>
           <p className="text-sm text-slate-500">
-            Cadastrar usuário institucional e definir perfil (RF002)
+            Cadastrar usuário institucional e definir perfil
           </p>
         </div>
         <Link

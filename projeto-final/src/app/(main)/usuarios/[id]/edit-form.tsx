@@ -30,7 +30,7 @@ export default function EditUserForm({
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Editar Usuário</h1>
           <p className="text-sm text-slate-500">
-            Atualização de dados e situação da conta (RF007 / RF008)
+            Atualização de dados e situação da conta
           </p>
         </div>
         <Link
@@ -96,7 +96,7 @@ export default function EditUserForm({
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Situação da Conta (RF008)
+                Situação da Conta
               </label>
               <select
                 name="situacao"

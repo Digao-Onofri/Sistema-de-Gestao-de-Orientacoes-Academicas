@@ -11,7 +11,7 @@ import type { UnidadeAcademica, Curso, PeriodoLetivo, SituacaoCurso } from '../t
 export async function criarUnidadeAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem incluir unidades acadêmicas (RF003).' };
+    return { erro: 'Apenas coordenadores podem incluir unidades acadêmicas.' };
   }
 
   const denominacao = (formData.get('denominacao') as string)?.trim();
@@ -75,7 +75,7 @@ export async function excluirUnidadeAction(id: string) {
 export async function criarCursoAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem incluir cursos (RF011).' };
+    return { erro: 'Apenas coordenadores podem incluir cursos.' };
   }
 
   const denominacao = (formData.get('denominacao') as string)?.trim();
@@ -118,7 +118,7 @@ export async function criarCursoAction(prevState: any, formData: FormData) {
 export async function alterarCursoAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem alterar cursos (RF012).' };
+    return { erro: 'Apenas coordenadores podem alterar cursos.' };
   }
 
   const id = formData.get('id') as string;
@@ -183,7 +183,7 @@ export async function excluirCursoAction(id: string) {
 export async function criarPeriodoAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem incluir períodos letivos (RF013).' };
+    return { erro: 'Apenas coordenadores podem incluir períodos letivos.' };
   }
 
   const identificacao = (formData.get('identificacao') as string)?.trim();
@@ -220,7 +220,7 @@ export async function criarPeriodoAction(prevState: any, formData: FormData) {
 export async function alterarPeriodoAction(prevState: any, formData: FormData) {
   const session = await getSession();
   if (!session || session.perfil !== 'Coordenador') {
-    return { erro: 'Apenas coordenadores podem alterar períodos letivos (RF014).' };
+    return { erro: 'Apenas coordenadores podem alterar períodos letivos.' };
   }
 
   const id = formData.get('id') as string;

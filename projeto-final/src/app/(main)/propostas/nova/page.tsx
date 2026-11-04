@@ -23,7 +23,7 @@ export default function NovaPropostaPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Nova Proposta Acadêmica</h1>
           <p className="text-sm text-slate-500">
-            Cadastrar tema de pesquisa para TCC ou Iniciação Científica (RF005)
+            Cadastrar tema de pesquisa para TCC ou Iniciação Científica
           </p>
         </div>
         <Link
