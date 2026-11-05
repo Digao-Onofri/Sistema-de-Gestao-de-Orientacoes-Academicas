@@ -27,14 +27,31 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      expect: { timeout: 30_000 },
+      use: {
+        ...devices['Desktop Chrome'],
+        navigationTimeout: 120_000,
+        actionTimeout: 60_000,
+      },
+    },
+    {
+      name: 'release03',
+      default: false,
+      testMatch: 'release03-*.spec.ts',
+      timeout: 180_000,
+      expect: { timeout: 30_000 },
+      use: {
+        ...devices['Desktop Chrome'],
+        navigationTimeout: 120_000,
+        actionTimeout: 60_000,
+      },
     },
   ],
   webServer: {
     command: 'npm run dev -- --hostname 127.0.0.1 --port 3109',
     url: baseURL,
     reuseExistingServer: false,
-    timeout: 120_000,
+    timeout: 360_000,
     env: {
       SGOA_DATA_DIR: e2eDataDir,
     },

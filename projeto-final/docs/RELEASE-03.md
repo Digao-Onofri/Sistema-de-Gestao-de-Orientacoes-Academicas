@@ -65,7 +65,7 @@ npm test -- --run --pool=threads --maxWorkers=1
 npm run build
 npm run test:e2e -- --timeout=120000
 # Apenas os cenários R03:
-npm run test:e2e -- --config playwright.release03.config.ts
+npm run test:e2e -- --project=release03
 ```
 
 A suíte E2E ampliada verifica criação, edição, publicação e cancelamento do ciclo; criação, edição e cancelamento da solicitação; aceitar ou rejeitar confirmações; bloqueio de edição após decisão; histórico no relatório/CSV; e ausência de códigos RF nas telas antigas. Os testes unitários cobrem também recusa e complementação, autoria, perfil, tutores inválidos, prazos, modalidades, duplicidade, registros legados, JSON corrompido e concorrência.

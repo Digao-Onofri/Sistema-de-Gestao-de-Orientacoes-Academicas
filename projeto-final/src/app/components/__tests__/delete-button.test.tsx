@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import DeleteButton from './delete-button';
+import DeleteButton from '../delete-button';
 
 const { errorToast, successToast } = vi.hoisted(() => ({
   errorToast: vi.fn(),
