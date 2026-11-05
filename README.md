@@ -105,10 +105,16 @@ Em Linux, se faltarem bibliotecas de sistema para o navegador, instale também a
 npx playwright install-deps chromium
 ```
 
-Execute toda a suíte E2E:
+Execute toda a suíte E2E, incluindo os testes da Release 03:
 
 ```bash
 npm run test:e2e -- --project=chromium
+```
+
+Para executar somente os testes E2E da Release 03:
+
+```bash
+npm run test:e2e -- --project=release03
 ```
 
 Para executar um arquivo de teste específico:
@@ -121,6 +127,12 @@ Para abrir o navegador e acompanhar as interações:
 
 ```bash
 npm run test:e2e -- --project=chromium --headed
+```
+
+Para acompanhar no navegador somente os testes da Release 03:
+
+```bash
+npm run test:e2e -- --project=release03 --headed
 ```
 
 Também é possível desacelerar as ações para acompanhar melhor a execução:
