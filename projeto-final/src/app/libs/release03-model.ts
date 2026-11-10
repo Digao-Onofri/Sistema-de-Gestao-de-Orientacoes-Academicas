@@ -7,7 +7,7 @@ export interface SolicitacaoR03 extends SolicitacaoOrientacao {
   dataAtualizacao?: string;
   cancelamento?: { dataCancelamento: string; tutoradoId: string };
 }
-export type ResultadoAcao = { erro?: string; sucesso?: boolean; mensagem?: string } | null;
+export type ResultadoAcao = { erro?: string; sucesso?: boolean; mensagem?: string; errosCampos?: Record<string, string> } | null;
 export const estadosCiclo = ['Rascunho', 'Publicado', 'Aberto', 'Encerrado', 'Cancelado'] as const;
 export const estadosSolicitacao = ['Pendente', 'Aceita', 'Recusada', 'AguardandoComplementacao', 'Cancelada'] as const;
 export const rotuloSituacao = (valor: string) => valor === 'AguardandoComplementacao' ? 'Aguardando complementação' : valor;
