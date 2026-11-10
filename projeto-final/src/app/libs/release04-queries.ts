@@ -222,3 +222,29 @@ export async function consultarNotificacoesBase(u: Usuario, filtros: FiltrosNoti
 }
 
 export const consultarNotificacoes = consultarNotificacoesBase;
+
+export async function consultarAuditoriaBase(u: Usuario, filtros: FiltrosAuditoriaR04) {
+  if (u.perfil !== 'Coordenador') return [];
+  const auditoria = lerR03<RegistroAuditoria>('auditoria.json');
+  let resultado = auditoria;
+
+  if (filtros.de) {
+    resultado = resultado.filter((a) => a.dataHora.slice(0, 10) >= filtros.de!);
+  }
+  if (filtros.ate) {
+    resultado = resultado.filter((a) => a.dataHora.slice(0, 10) <= filtros.ate!);
+  }
+  if (filtros.usuario) {
+    resultado = resultado.filter((a) => a.usuarioId === filtros.usuario);
+  }
+  if (filtros.entidade) {
+    resultado = resultado.filter((a) => a.entidade === filtros.entidade);
+  }
+  if (filtros.tipoAcao) {
+    resultado = resultado.filter((a) => a.tipoAcao === filtros.tipoAcao);
+  }
+
+  return resultado.sort((x, y) => y.dataHora.localeCompare(x.dataHora) || x.id.localeCompare(y.id));
+}
+
+export const consultarAuditoria = consultarAuditoriaBase;
