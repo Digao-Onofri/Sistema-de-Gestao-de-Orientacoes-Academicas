@@ -10,9 +10,9 @@ export default async function MainLayout({
   const session = await getSession();
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen flex-col bg-slate-100 md:flex-row">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col justify-between p-4">
+      <aside className="w-full bg-slate-900 text-slate-100 flex flex-col justify-between p-4 md:w-64">
         <div>
           <div className="mb-6 px-2">
             <h2 className="text-xl font-bold tracking-tight text-white">SGOA</h2>
@@ -61,6 +61,12 @@ export default async function MainLayout({
             {session?.perfil !== 'Tutor' && <Link href="/ciclos" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📆 Ciclos de orientação</Link>}
             <Link href="/solicitacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📨 Solicitações de orientação</Link>
             {session?.perfil === 'Coordenador' && <Link href="/relatorio-solicitacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📋 Relatório de solicitações</Link>}
+            <Link href="/alocacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">🤝 Alocações</Link>
+            <Link href="/etapas" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📌 Etapas</Link>
+            <Link href="/reunioes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">🗓️ Reuniões</Link>
+            {session?.perfil === 'Coordenador' && <Link href="/painel" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">📊 Painel gerencial</Link>}
+            <Link href="/notificacoes" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">🔔 Notificações</Link>
+            {session?.perfil === 'Coordenador' && <Link href="/auditoria" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-slate-800 text-slate-300 hover:text-white">🧾 Auditoria</Link>}
           </nav>
         </div>
 
@@ -85,8 +91,8 @@ export default async function MainLayout({
       </aside>
 
       {/* Conteúdo Principal */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="mx-auto max-w-5xl">
+      <main className="flex-1 overflow-x-auto overflow-y-auto p-4 sm:p-6 md:p-8">
+        <div className="mx-auto max-w-6xl">
           {children}
         </div>
       </main>
