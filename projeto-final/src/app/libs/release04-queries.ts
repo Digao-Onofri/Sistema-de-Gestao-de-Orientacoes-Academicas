@@ -203,3 +203,22 @@ export async function consultarReunioesBase(u: Usuario, filtros: FiltrosReunioes
 }
 
 export const consultarReunioes = consultarReunioesBase;
+
+export async function consultarNotificacoesBase(u: Usuario, filtros: FiltrosNotificacoesR04) {
+  const notificacoes = lerR03<NotificacaoInterna>('notificacoes.json');
+  let resultado = notificacoes.filter((n) => n.usuarioId === u.id);
+
+  if (filtros.tipo) {
+    resultado = resultado.filter((n) => n.tipoEvento === filtros.tipo);
+  }
+  if (filtros.de) {
+    resultado = resultado.filter((n) => n.dataHora.slice(0, 10) >= filtros.de!);
+  }
+  if (filtros.ate) {
+    resultado = resultado.filter((n) => n.dataHora.slice(0, 10) <= filtros.ate!);
+  }
+
+  return resultado.sort((x, y) => y.dataHora.localeCompare(x.dataHora) || x.id.localeCompare(y.id));
+}
+
+export const consultarNotificacoes = consultarNotificacoesBase;
