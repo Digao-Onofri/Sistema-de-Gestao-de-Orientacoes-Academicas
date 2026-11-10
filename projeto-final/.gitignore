@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Teste manual R04 (base demo isolada)
+/.next-manual-r04/
+/data/manual-r04/
+
 # Playwright
 node_modules/
 /test-results/
