@@ -115,5 +115,23 @@
     "entidade": "Autenticacao",
     "tipoAcao": "LOGIN",
     "detalhes": "Login efetuado com sucesso"
+  },
+  {
+    "id": "e8eff389-3861-4f8f-9565-37b2fe06b11d",
+    "dataHora": "2026-11-10T00:58:31.449Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Autenticacao",
+    "tipoAcao": "LOGIN",
+    "detalhes": "Login efetuado com sucesso"
+  },
+  {
+    "id": "3a257345-b692-4487-ba07-db7ebc16344d",
+    "dataHora": "2026-11-10T19:26:03.059Z",
+    "usuarioId": "coord-default-001",
+    "usuarioEmail": "admin@sgoa.edu",
+    "entidade": "Autenticacao",
+    "tipoAcao": "LOGIN",
+    "detalhes": "Login efetuado com sucesso"
   }
 ]
