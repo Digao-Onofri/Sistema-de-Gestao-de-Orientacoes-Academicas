@@ -175,3 +175,31 @@ export async function consultarEtapasBase(u: Usuario, filtros: FiltrosEtapasR04)
 }
 
 export const consultarEtapas = consultarEtapasBase;
+
+export async function consultarReunioesBase(u: Usuario, filtros: FiltrosReunioesR04) {
+  const reunioes = lerR03<RegistroReuniao>('reunioes.json');
+  const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
+
+  let resultado = reunioes.filter((r) => {
+    const a = alocacoes.find((al) => al.id === r.alocacaoId);
+    if (!a) return false;
+    if (u.perfil === 'Coordenador') return true;
+    if (u.perfil === 'Tutor') return a.tutorId === u.id;
+    if (u.perfil === 'Tutorado') return a.tutoradoId === u.id;
+    return false;
+  });
+
+  if (filtros.alocacao) {
+    resultado = resultado.filter((r) => r.alocacaoId === filtros.alocacao);
+  }
+  if (filtros.de) {
+    resultado = resultado.filter((r) => r.data >= filtros.de!);
+  }
+  if (filtros.ate) {
+    resultado = resultado.filter((r) => r.data <= filtros.ate!);
+  }
+
+  return resultado.sort((x, y) => y.data.localeCompare(x.data) || x.id.localeCompare(y.id));
+}
+
+export const consultarReunioes = consultarReunioesBase;

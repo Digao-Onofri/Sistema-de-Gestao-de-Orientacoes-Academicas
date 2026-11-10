@@ -250,3 +250,49 @@ export async function criarEtapaAction(_: ResultadoAcao, f: FormData): Promise<R
     return { erro: 'Não foi possível criar a etapa.' };
   }
 }
+
+export async function criarReuniaoAction(_: ResultadoAcao, f: FormData): Promise<ResultadoAcao> {
+  try {
+    const usuario = await usuarioR03();
+    if (!usuario || usuario.perfil !== 'Tutor' || usuario.situacao !== 'Ativa') {
+      return { erro: 'Apenas tutores ativos podem registrar reuniões.' };
+    }
+
+    const alocacaoId = texto(f, 'alocacaoId');
+    const data = texto(f, 'data');
+    const resumo = textoTrim(f.get('resumo'));
+    const encaminhamentos = textoTrim(f.get('encaminhamentos'));
+    const proximoContato = texto(f, 'proximoContato');
+
+    if (!alocacaoId) return { erro: 'Selecione a alocação.' };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) return { erro: 'Informe a data da reunião.' };
+    if (resumo.length < 1 || resumo.length > 5000) return { erro: 'Informe o resumo (até 5.000 caracteres).' };
+    if (encaminhamentos.length < 1 || encaminhamentos.length > 5000) return { erro: 'Informe os encaminhamentos (até 5.000 caracteres).' };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(proximoContato)) return { erro: 'Informe a data prevista para o próximo contato.' };
+
+    const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
+    const a = alocacoes.find((al) => al.id === alocacaoId);
+    if (!a || a.tutorId !== usuario.id) return { erro: 'Alocação não encontrada ou sem permissão.' };
+    if (a.situacao !== 'Ativa') return { erro: 'Só é possível registrar reunião para alocação ativa.' };
+
+    const reunioes = lerR03<any>('reunioes.json');
+    const nova = {
+      id: randomUUID(),
+      alocacaoId,
+      data,
+      resumo,
+      encaminhamentos,
+      proximoContato,
+    };
+    reunioes.push(nova);
+    gravarR03('reunioes.json', reunioes);
+
+    try {
+      await registrarAuditoriaEstrita(usuario.id, usuario.email, 'RegistroReuniao', 'CRIACAO', `Reunião registrada para alocação ${alocacaoId}.`);
+    } catch {}
+
+    return atualizarEtapasReunioes();
+  } catch {
+    return { erro: 'Não foi possível registrar a reunião.' };
+  }
+}
