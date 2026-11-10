@@ -195,3 +195,58 @@ export async function cancelarAlocacaoAction(_: ResultadoAcao, f: FormData): Pro
     return { erro: 'Não foi possível cancelar a alocação.' };
   }
 }
+
+function atualizarEtapasReunioes() {
+  ['/etapas', '/reunioes', '/alocacoes'].forEach((p) => {
+    try { revalidatePath(p); } catch {}
+  });
+  return { sucesso: true };
+}
+
+export async function criarEtapaAction(_: ResultadoAcao, f: FormData): Promise<ResultadoAcao> {
+  try {
+    const usuario = await usuarioR03();
+    if (!usuario || usuario.perfil !== 'Tutor' || usuario.situacao !== 'Ativa') {
+      return { erro: 'Apenas tutores ativos podem criar etapas.' };
+    }
+
+    const alocacaoId = texto(f, 'alocacaoId');
+    const descricao = textoTrim(f.get('descricao'));
+    const responsavel = textoTrim(f.get('responsavel'));
+    const prazo = texto(f, 'prazo');
+    const situacao = texto(f, 'situacao');
+
+    if (!alocacaoId) return { erro: 'Selecione a alocação.' };
+    if (descricao.length < 1 || descricao.length > 5000) return { erro: 'Informe a descrição (até 5.000 caracteres).' };
+    if (responsavel.length < 1 || responsavel.length > 200) return { erro: 'Informe o responsável (1 a 200 caracteres).' };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(prazo)) return { erro: 'Informe um prazo válido.' };
+    if (!['Pendente', 'EmAndamento', 'Concluida', 'Atrasada'].includes(situacao)) {
+      return { erro: 'Situação da etapa inválida.' };
+    }
+
+    const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
+    const a = alocacoes.find((al) => al.id === alocacaoId);
+    if (!a || a.tutorId !== usuario.id) return { erro: 'Alocação não encontrada ou sem permissão.' };
+    if (a.situacao !== 'Ativa') return { erro: 'Só é possível criar etapa para alocação ativa.' };
+
+    const etapas = lerR03<any>('etapas.json');
+    const nova = {
+      id: randomUUID(),
+      alocacaoId,
+      descricao,
+      responsavel,
+      prazo,
+      situacao,
+    };
+    etapas.push(nova);
+    gravarR03('etapas.json', etapas);
+
+    try {
+      await registrarAuditoriaEstrita(usuario.id, usuario.email, 'EtapaAcompanhamento', 'CRIACAO', `Etapa criada para alocação ${alocacaoId}.`);
+    } catch {}
+
+    return atualizarEtapasReunioes();
+  } catch {
+    return { erro: 'Não foi possível criar a etapa.' };
+  }
+}

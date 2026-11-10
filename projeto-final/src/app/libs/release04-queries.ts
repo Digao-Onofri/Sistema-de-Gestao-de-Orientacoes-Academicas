@@ -139,3 +139,39 @@ export async function consultarAlocacoesBase(u: Usuario, filtros: FiltrosAlocaco
 }
 
 export const consultarAlocacoes = consultarAlocacoesBase;
+
+export async function consultarEtapasBase(u: Usuario, filtros: FiltrosEtapasR04) {
+  const etapas = lerR03<EtapaR04>('etapas.json');
+  const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
+  const propostas = lerR03<PropostaAcademica>('propostas.json');
+
+  let resultado = etapas.filter((e) => {
+    const a = alocacoes.find((al) => al.id === e.alocacaoId);
+    if (!a) return false;
+    if (u.perfil === 'Coordenador') return true;
+    if (u.perfil === 'Tutor') return a.tutorId === u.id;
+    if (u.perfil === 'Tutorado') return a.tutoradoId === u.id;
+    return false;
+  });
+
+  if (filtros.alocacao) {
+    resultado = resultado.filter((e) => e.alocacaoId === filtros.alocacao);
+  }
+  if (filtros.proposta) {
+    resultado = resultado.filter((e) => {
+      const a = alocacoes.find((al) => al.id === e.alocacaoId);
+      return a?.propostaId === filtros.proposta;
+    });
+  }
+  if (filtros.responsavel) {
+    const r = filtros.responsavel.toLowerCase();
+    resultado = resultado.filter((e) => e.responsavel?.toLowerCase().includes(r));
+  }
+  if (filtros.situacao) {
+    resultado = resultado.filter((e) => e.situacao === filtros.situacao);
+  }
+
+  return resultado.sort((x, y) => x.prazo.localeCompare(y.prazo) || x.id.localeCompare(y.id));
+}
+
+export const consultarEtapas = consultarEtapasBase;
