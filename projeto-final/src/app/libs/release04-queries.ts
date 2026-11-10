@@ -140,6 +140,7 @@ export async function consultarAlocacoesBase(u: Usuario, filtros: FiltrosAlocaco
 
 export const consultarAlocacoes = consultarAlocacoesBase;
 
+
 export async function consultarEtapasBase(u: Usuario, filtros: FiltrosEtapasR04) {
   const etapas = lerR03<EtapaR04>('etapas.json');
   const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
@@ -174,8 +175,6 @@ export async function consultarEtapasBase(u: Usuario, filtros: FiltrosEtapasR04)
   return resultado.sort((x, y) => x.prazo.localeCompare(y.prazo) || x.id.localeCompare(y.id));
 }
 
-export const consultarEtapas = consultarEtapasBase;
-
 export async function consultarReunioesBase(u: Usuario, filtros: FiltrosReunioesR04) {
   const reunioes = lerR03<RegistroReuniao>('reunioes.json');
   const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
@@ -202,8 +201,6 @@ export async function consultarReunioesBase(u: Usuario, filtros: FiltrosReunioes
   return resultado.sort((x, y) => y.data.localeCompare(x.data) || x.id.localeCompare(y.id));
 }
 
-export const consultarReunioes = consultarReunioesBase;
-
 export async function consultarNotificacoesBase(u: Usuario, filtros: FiltrosNotificacoesR04) {
   const notificacoes = lerR03<NotificacaoInterna>('notificacoes.json');
   let resultado = notificacoes.filter((n) => n.usuarioId === u.id);
@@ -220,8 +217,6 @@ export async function consultarNotificacoesBase(u: Usuario, filtros: FiltrosNoti
 
   return resultado.sort((x, y) => y.dataHora.localeCompare(x.dataHora) || x.id.localeCompare(y.id));
 }
-
-export const consultarNotificacoes = consultarNotificacoesBase;
 
 export async function consultarAuditoriaBase(u: Usuario, filtros: FiltrosAuditoriaR04) {
   if (u.perfil !== 'Coordenador') return [];
@@ -247,4 +242,146 @@ export async function consultarAuditoriaBase(u: Usuario, filtros: FiltrosAuditor
   return resultado.sort((x, y) => y.dataHora.localeCompare(x.dataHora) || x.id.localeCompare(y.id));
 }
 
+export const consultarEtapas = consultarEtapasBase;
+export const consultarReunioes = consultarReunioesBase;
+export const consultarNotificacoes = consultarNotificacoesBase;
 export const consultarAuditoria = consultarAuditoriaBase;
+
+export async function consultarPainel(u: Usuario, filtros: FiltrosPainelR04) {
+  if (u.perfil !== 'Coordenador') return [] as any[];
+  const ciclos = lerR03<CicloOrientacao>('ciclos.json');
+  const cursos = lerR03<Curso>('cursos.json');
+  const periodos = lerR03<PeriodoLetivo>('periodos.json');
+  const solicitacoes = lerR03<any>('solicitacoes.json');
+  const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
+  const usuarios = lerR03<Usuario>('usuarios.json');
+
+  let ciclosFiltrados = ciclos;
+  if (filtros.curso) {
+    ciclosFiltrados = ciclosFiltrados.filter((c) => c.cursoId === filtros.curso);
+  }
+  if (filtros.ciclo) {
+    ciclosFiltrados = ciclosFiltrados.filter((c) => c.id === filtros.ciclo);
+  }
+
+  const linhas: any[] = [];
+  for (const ciclo of ciclosFiltrados) {
+    const curso = cursos.find((cur) => cur.id === ciclo.cursoId);
+    const periodo = periodos.find((p) => p.id === ciclo.periodoId);
+    const solicCiclo = solicitacoes.filter((s: any) => s.cicloId === ciclo.id);
+    const alocCiclo = alocacoes.filter((a) => a.cicloId === ciclo.id);
+
+    const porSituacaoSolic = {
+      Pendente: solicCiclo.filter((s: any) => s.situacao === 'Pendente').length,
+      Aceita: solicCiclo.filter((s: any) => s.situacao === 'Aceita').length,
+      Recusada: solicCiclo.filter((s: any) => s.situacao === 'Recusada').length,
+      AguardandoComplementacao: solicCiclo.filter((s: any) => s.situacao === 'AguardandoComplementacao').length,
+      Cancelada: solicCiclo.filter((s: any) => s.situacao === 'Cancelada').length,
+    };
+
+    const tutorIds = Array.from(new Set(alocCiclo.map((a) => a.tutorId)));
+    if (tutorIds.length === 0) {
+      linhas.push({
+        cursoId: ciclo.cursoId,
+        curso: curso?.denominacao ?? 'Curso indisponível',
+        cicloId: ciclo.id,
+        periodo: periodo?.identificacao ?? ciclo.id,
+        modalidade: ciclo.modalidade,
+        tutorId: '',
+        tutor: '',
+        limite: '',
+        orientandosCiclo: 0,
+        vagasGlobais: '',
+        alocAtivasCiclo: alocCiclo.filter((a) => a.situacao === 'Ativa').length,
+        alocEncerradasCiclo: alocCiclo.filter((a) => a.situacao === 'Encerrada').length,
+        alocCanceladasCiclo: alocCiclo.filter((a) => a.situacao === 'Cancelada').length,
+        ...porSituacaoSolic,
+      });
+      continue;
+    }
+
+    for (const tid of tutorIds) {
+      const tutor = usuarios.find((u2) => u2.id === tid);
+      const alocTutorCiclo = alocCiclo.filter((a) => a.tutorId === tid);
+      const alocTutorAtivasGlobais = alocacoes.filter((a) => a.tutorId === tid && a.situacao === 'Ativa').length;
+      const limite = tutor?.limiteOrientandos;
+      let vagasGlobais: string | number = '—';
+      if (typeof limite === 'number' && Number.isInteger(limite) && limite >= 1) {
+        vagasGlobais = Math.max(0, limite - alocTutorAtivasGlobais);
+      }
+
+      linhas.push({
+        cursoId: ciclo.cursoId,
+        curso: curso?.denominacao ?? 'Curso indisponível',
+        cicloId: ciclo.id,
+        periodo: periodo?.identificacao ?? ciclo.id,
+        modalidade: ciclo.modalidade,
+        tutorId: tid,
+        tutor: tutor?.nome ?? 'Tutor indisponível',
+        limite: typeof limite === 'number' && limite >= 1 ? limite : '—',
+        orientandosCiclo: alocTutorCiclo.filter((a) => a.situacao === 'Ativa').length,
+        vagasGlobais,
+        alocAtivasCiclo: alocTutorCiclo.filter((a) => a.situacao === 'Ativa').length,
+        alocEncerradasCiclo: alocTutorCiclo.filter((a) => a.situacao === 'Encerrada').length,
+        alocCanceladasCiclo: alocTutorCiclo.filter((a) => a.situacao === 'Cancelada').length,
+        ...porSituacaoSolic,
+      });
+    }
+  }
+
+  linhas.sort((a, b) => a.curso.localeCompare(b.curso, 'pt-BR') || a.periodo.localeCompare(b.periodo) || a.cicloId.localeCompare(b.cicloId) || (a.tutor || '').localeCompare(b.tutor || ''));
+  return linhas;
+}
+
+function protegerFormulaCsv(valor: string) {
+  if (/^[\s]*[=+\-@]/.test(valor)) return "'" + valor;
+  return valor;
+}
+
+function celulaCsv(valor: string) {
+  const v = protegerFormulaCsv(valor).replaceAll('"', '""');
+  return `"${v}"`;
+}
+
+export function csvPainel(linhas: any[]) {
+  const cabecalhos = [
+    'Curso',
+    'Ciclo',
+    'Modalidade',
+    'Tutor',
+    'Limite',
+    'Orientandos ativos no ciclo',
+    'Vagas disponíveis (global)',
+    'Solicitações pendentes',
+    'Solicitações aceitas',
+    'Solicitações recusadas',
+    'Solicitações aguardando complementação',
+    'Solicitações canceladas',
+    'Alocações ativas no ciclo',
+    'Alocações encerradas no ciclo',
+    'Alocações canceladas no ciclo',
+  ];
+  const linhasCsv = linhas.map((l) => [
+    l.curso,
+    l.periodo,
+    l.modalidade,
+    l.tutor || '',
+    l.limite === '—' ? '—' : String(l.limite),
+    String(l.orientandosCiclo),
+    l.vagasGlobais === '—' ? '—' : String(l.vagasGlobais),
+    String(l.Pendente || 0),
+    String(l.Aceita || 0),
+    String(l.Recusada || 0),
+    String(l.AguardandoComplementacao || 0),
+    String(l.Cancelada || 0),
+    String(l.alocAtivasCiclo || 0),
+    String(l.alocEncerradasCiclo || 0),
+    String(l.alocCanceladasCiclo || 0),
+  ]);
+  return '\uFEFF' + [cabecalhos, ...linhasCsv].map((l) => l.map(celulaCsv).join(';')).join('\r\n') + '\r\n';
+}
+
+export async function obterUsuarioLogado() {
+  return usuarioR03();
+}
+
