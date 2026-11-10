@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Gestão de Orientações Acadêmicas (SGOA)
 
-## Getting Started
+Aplicação web Next.js 16.4.3 com TypeScript, Tailwind CSS, Server Actions e persistência em arquivos JSON locais.
 
-First, run the development server:
+## Versões e ambiente
+- Node.js: compatível com Next.js 16 (testado em Node v20.20.2; pacotes podem apresentar avisos EBADENGINE)
+- Next.js: ^16.4.3
+- React: ^19.2.0
+- TypeScript: ^5
+- Testes: Vitest, Playwright
 
+## Instalação
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd projeto-final
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Desenvolvimento
+```bash
+npm run dev
+```
+Acesse http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build e execução
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Variáveis de ambiente
+- `SGOA_DATA_DIR` - diretório com arquivos JSON de dados (padrão: `./data`)
+- `TOKEN` - segredo para sessão (não versionar)
 
-## Learn More
+Crie `.env.local` conforme necessidade. Nunca commitar segredos.
 
-To learn more about Next.js, take a look at the following resources:
+## Dados
+Os dados ficam em `data/*.json`. Em testes E2E, usar `SGOA_DATA_DIR` apontando para diretório temporário. Preservar `data/auditoria.json`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Backup e restauração
+Ver `docs/RNF-PROCEDIMENTOS.md`. Script: `scripts/backup-sgoa.sh`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testes
+```bash
+npx tsc --noEmit
+npm test -- --run --pool=threads --maxWorkers=1
+npm run test:e2e -- --timeout=120000
+```
+Observação: em alguns ambientes Node 20 há avisos de worker; browsers Playwright podem precisar ser instalados com `npx playwright install`.
 
-## Deploy on Vercel
+## Documentação Release 04
+- `docs/RELEASE-04.md` (referência, não alterado)
+- `docs/RELEASE-04-PLANO-EXECUCAO.md`
+- `docs/RELEASE-04-DECISOES.md`
+- `docs/RELEASE-04-RELATORIO.md`
+- `docs/RNF-PROCEDIMENTOS.md`
+- `docs/DRE_SGOA_v1.2_requisitos_ordenados.md`
+- `docs/MANUAL-TESTE-R04.md`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Teste manual R04 (base demo isolada)
+```bash
+node scripts/preparar-demo-r04.mjs
+NEXT_DIST_DIR=.next-manual-r04 SGOA_DATA_DIR=./data/manual-r04 npm run dev -- --port 3001
+```
+Veja `docs/MANUAL-TESTE-R04.md` para credenciais e roteiro. Artifacts locais gerados (`.next-manual-r04/`, `data/manual-r04/`) são de teste e estão no `.gitignore`.
