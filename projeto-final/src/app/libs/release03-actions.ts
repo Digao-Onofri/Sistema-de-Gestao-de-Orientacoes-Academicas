@@ -7,6 +7,8 @@ import type { ResultadoAcao, SolicitacaoR03 } from './release03-model';
 import { dataValida, hojeInstitucional, transicoes } from './release03-model';
 import { lerR03, gravarR03 } from './release03-store';
 import { usuarioR03 } from './release03-access';
+import { registrarAuditoriaEstrita } from './auditoria';
+import { criarNotificacaoEstrita } from './notificacoes';
 
 const texto = (f: FormData, chave: string) => typeof f.get(chave) === 'string' ? String(f.get(chave)).trim() : '';
 function atualizar(mensagem?: string) {
@@ -40,6 +42,10 @@ export async function salvarCicloAction(_: ResultadoAcao, f: FormData): Promise<
     const erro = validarCiclo(ciclo);
     if (erro) return { erro };
     gravarR03('ciclos.json', anterior ? ciclos.map(c => c.id === id ? ciclo : c) : [...ciclos, ciclo]);
+    try {
+      const u = usuario;
+      if (u) await registrarAuditoriaEstrita(u.id, u.email, 'CicloOrientacao', anterior ? 'EDICAO' : 'CRIACAO', `Ciclo ${ciclo.id} ${anterior ? 'editado' : 'criado'}.`);
+    } catch {}
     return atualizar();
   } catch { return { erro: 'Não foi possível salvar. Verifique a integridade e a permissão dos arquivos JSON.' }; }
 }
@@ -58,6 +64,10 @@ export async function mudarCicloAction(_: ResultadoAcao, f: FormData): Promise<R
     }
     ciclo.situacao = destino as CicloOrientacao['situacao'];
     gravarR03('ciclos.json', ciclos);
+    try {
+      const u = await usuarioR03();
+      if (u) await registrarAuditoriaEstrita(u.id, u.email, 'CicloOrientacao', 'ALTERACAO_SITUACAO', `Ciclo ${ciclo.id} alterado para ${destino}.`);
+    } catch {}
     return atualizar(destino === 'Cancelado' ? 'Ciclo cancelado. Os registros e o histórico foram preservados.' : undefined);
   } catch { return { erro: 'Não foi possível atualizar o ciclo. Verifique os arquivos JSON.' }; }
 }
@@ -99,6 +109,21 @@ async function salvarSolicitacao(f: FormData, id?: string): Promise<ResultadoAca
       propostaSubmetida: structuredClone(proposta), elegibilidadeDeclarada: true };
     if (anterior) nova.dataAtualizacao = new Date().toISOString();
     gravarR03('solicitacoes.json', anterior ? solicitacoes.map(s => s.id === id ? nova : s) : [...solicitacoes, nova]);
+    try {
+      if (anterior) {
+        await registrarAuditoriaEstrita(usuario.id, usuario.email, 'SolicitacaoOrientacao', 'EDICAO', `Solicitação ${nova.id} editada.`);
+      } else {
+        await registrarAuditoriaEstrita(usuario.id, usuario.email, 'SolicitacaoOrientacao', 'CRIACAO', `Solicitação ${nova.id} criada.`);
+        const usuarios = lerR03<Usuario>('usuarios.json');
+        const set = new Set<string>();
+        for (const tid of nova.tutoresPreferidos || []) {
+          if (!set.has(tid)) {
+            set.add(tid);
+            try { await criarNotificacaoEstrita(tid, 'SolicitacaoRecebida', 'Recebimento de solicitação.', nova.id); } catch {}
+          }
+        }
+      }
+    } catch {}
     return atualizar();
   } catch { return { erro: 'Não foi possível registrar a solicitação. Verifique os arquivos JSON.' }; }
 }
@@ -118,6 +143,9 @@ export async function cancelarSolicitacaoAction(_: ResultadoAcao, f: FormData): 
     s.situacao = 'Cancelada';
     s.cancelamento = { dataCancelamento: new Date().toISOString(), tutoradoId: usuario.id };
     gravarR03('solicitacoes.json', solicitacoes);
+    try {
+      await registrarAuditoriaEstrita(usuario.id, usuario.email, 'SolicitacaoOrientacao', 'CANCELAMENTO', `Solicitação ${s.id} cancelada.`);
+    } catch {}
     return atualizar('Solicitação cancelada. O registro foi mantido no histórico.');
   } catch { return { erro: 'Não foi possível cancelar a solicitação. Verifique os arquivos JSON.' }; }
 }
@@ -146,6 +174,13 @@ export async function decidirSolicitacaoAction(_: ResultadoAcao, f: FormData): P
     s.decisao = { resultado: resultado as DecisaoSolicitacao['resultado'], justificativa, tutorId: usuario.id, dataDecisao: new Date().toISOString() };
     s.situacao = resultado === 'Aceitar' ? 'Aceita' : resultado === 'Recusar' ? 'Recusada' : 'AguardandoComplementacao';
     gravarR03('solicitacoes.json', solicitacoes);
+    try {
+      await registrarAuditoriaEstrita(usuario.id, usuario.email, 'SolicitacaoOrientacao', 'DECISAO', `Decisão registrada para solicitação ${s.id}.`);
+    } catch {}
+    try {
+      const rotulo = resultado === 'Aceitar' ? 'Aceita' : resultado === 'Recusar' ? 'Recusada' : 'Aguardando complementação';
+      await criarNotificacaoEstrita(s.tutoradoId, 'DecisaoSolicitacao', rotulo, s.id);
+    } catch {}
     return atualizar();
   } catch { return { erro: 'Não foi possível registrar a decisão. Verifique os arquivos JSON.' }; }
 }
