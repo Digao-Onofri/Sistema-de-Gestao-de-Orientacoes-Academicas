@@ -157,12 +157,12 @@ export default async function AlocacoesPage({ searchParams }: { searchParams?: P
                   <td className="px-4 py-2 sm:px-6">
                     {podeConfirmar && a.situacao === 'Ativa' ? (
                       <div className="flex flex-col gap-2 sm:flex-row">
-                        <FormR03 action={encerrarAlocacaoAction}>
+                        <FormR03 action={encerrarAlocacaoAction} confirmacao="Deseja encerrar esta alocação?">
                           <input type="hidden" name="id" value={a.id} />
                           <input name="motivo" placeholder="Motivo" required className="rounded-lg border border-slate-300 px-2 py-1 text-xs" />
                           <button className="rounded-lg border border-slate-300 px-2 py-1 text-xs">Encerrar</button>
                         </FormR03>
-                        <FormR03 action={cancelarAlocacaoAction}>
+                        <FormR03 action={cancelarAlocacaoAction} confirmacao="Deseja cancelar esta alocação?">
                           <input type="hidden" name="id" value={a.id} />
                           <input name="motivo" placeholder="Motivo" required className="rounded-lg border border-slate-300 px-2 py-1 text-xs" />
                           <button className="rounded-lg border border-slate-300 px-2 py-1 text-xs">Cancelar</button>

@@ -3,7 +3,7 @@
 import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import type { AlocacaoOrientacao, CicloOrientacao, PropostaAcademica, SolicitacaoOrientacao, Usuario } from '../types';
-import type { ResultadoAcao } from './release03-model';
+import { dataValida, type ResultadoAcao } from './release03-model';
 import { lerR03, gravarR03 } from './release03-store';
 import { usuarioR03 } from './release03-access';
 import { registrarAuditoriaEstrita } from './auditoria';
@@ -219,7 +219,7 @@ export async function criarEtapaAction(_: ResultadoAcao, f: FormData): Promise<R
     if (!alocacaoId) return { erro: 'Selecione a alocação.' };
     if (descricao.length < 1 || descricao.length > 5000) return { erro: 'Informe a descrição (até 5.000 caracteres).' };
     if (responsavel.length < 1 || responsavel.length > 200) return { erro: 'Informe o responsável (1 a 200 caracteres).' };
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(prazo)) return { erro: 'Informe um prazo válido.' };
+    if (!dataValida(prazo)) return { erro: 'Informe um prazo válido.' };
     if (!['Pendente', 'EmAndamento', 'Concluida', 'Atrasada'].includes(situacao)) {
       return { erro: 'Situação da etapa inválida.' };
     }
@@ -265,10 +265,10 @@ export async function criarReuniaoAction(_: ResultadoAcao, f: FormData): Promise
     const proximoContato = texto(f, 'proximoContato');
 
     if (!alocacaoId) return { erro: 'Selecione a alocação.' };
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) return { erro: 'Informe a data da reunião.' };
+    if (!dataValida(data)) return { erro: 'Informe a data da reunião.' };
     if (resumo.length < 1 || resumo.length > 5000) return { erro: 'Informe o resumo (até 5.000 caracteres).' };
     if (encaminhamentos.length < 1 || encaminhamentos.length > 5000) return { erro: 'Informe os encaminhamentos (até 5.000 caracteres).' };
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(proximoContato)) return { erro: 'Informe a data prevista para o próximo contato.' };
+    if (!dataValida(proximoContato)) return { erro: 'Informe a data prevista para o próximo contato.' };
 
     const alocacoes = lerR03<AlocacaoR04>('alocacoes.json');
     const a = alocacoes.find((al) => al.id === alocacaoId);

@@ -3,7 +3,7 @@
 > Documento operacional derivado de `docs/RELEASE-04.md` e do DRE `docs/DRE_SGOA_v1.2_requisitos_ordenados.md`.
 > Não substitui os requisitos, não altera `docs/RELEASE-04.md` e não declara requisito atendido sem evidência.
 >
-> **Estado desta preparação:** DRE localizado e lido integralmente; plano revisado; nenhum código de Release 04 implementado; nenhum teste executado nesta sessão.
+> **Estado atualizado (17/11/2026):** cobertura Vitest e specs Playwright R04 adicionados e executados. Os testes R04, TypeScript e build passaram; os sete testes Playwright passaram em Chromium com Next.js 16.4.6. Permanecem avisos de workspace com múltiplos lockfiles, convenção `middleware` depreciada e acesso dinâmico ao filesystem no build.
 >
 > **Data da análise:** 09/11/2026.
 
@@ -425,30 +425,30 @@ Status: **A implementar** = não existe; **Parcial** = existe base a completar; 
 
 | Requisito | Comportamento/camada | Arquivos previstos/implementados | Evidência/teste | Status |
 | --- | --- | --- | --- | --- |
-| RF021 | Ação de confirmação com validações de tutor/tutorado/ciclo/proposta/capacidade/duplicidade | `release04-actions.ts`, `release04-model.ts` | Implementado. Verificação por `tsc`/`build`. Sem suíte E2E executada neste ambiente. | Implementado (não verificado por testes) |
-| RF022 | Ação de encerramento com motivo/data/responsável | `release04-actions.ts` | Implementado. | Implementado (não verificado por testes) |
-| RF030 | Ação de cancelamento com motivo/data/responsável | `release04-actions.ts` | Implementado. | Implementado (não verificado por testes) |
-| RF031 | Consulta de alocações com filtros e projeção por perfil | `release04-queries.ts`, `app/(main)/alocacoes/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF032 | Inclusão de etapa pelo tutor da alocação | `release04-actions.ts`, `app/(main)/etapas/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF033 | Inclusão de reunião pelo tutor da alocação | `release04-actions.ts`, `app/(main)/reunioes/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF034 | Notificações internas em eventos mínimos | `notificacoes.ts`/estrita, ações R03/R04 | Implementado para eventos mínimos. Lacuna de “alteração de prazo” documentada (D11). `PrazoAlterado` não emitido. | Parcial (lacuna documentada) |
-| RF035 | Painel gerencial por curso/ciclo | `release04-queries.ts`, `app/(main)/painel/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF036 | Auditoria de contas, ciclos, solicitações, decisões e alocações | `auditoria.ts`/estrita, ações R01/R03/R04 | Instrumentação adicionada (R01/R02 já auditavam; R03 instrumentado). Sem action de edição/exclusão. | Parcial/Implementado (sem verificação por testes) |
-| RF037 | Consulta de etapas por perfil e vínculo | `release04-queries.ts`, `app/(main)/etapas/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF038 | Consulta de reuniões por perfil e vínculo | `release04-queries.ts`, `app/(main)/reunioes/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF039 | Consulta de notificações próprias | `release04-queries.ts`, `app/(main)/notificacoes/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RF040 | CSV do painel em UTF-8, com filtros e ordenação | `release04-queries.ts`, `app/(main)/painel/csv/route.ts` | Implementado. | Implementado (não verificado por testes) |
-| RF041 | Consulta de auditoria restrita à coordenação | `release04-queries.ts`, `app/(main)/auditoria/page.tsx` | Implementado. | Implementado (não verificado por testes) |
-| RNF001 | Erros por campo, pt-BR, preservação de dados | `release03-form.tsx`/`release03-ui.tsx` (extensão aditiva) | Testes de componente e inspeção | Parcial |
-| RNF002 | Teclado, rótulos, 360–1366 px | Layout e componentes | Playwright viewports + inspeção manual | Parcial |
-| RNF003 | Integridade/capacidade/concorrência | `release04-actions.ts`, `release04-store` (reuso) | Testes de concorrência, rollback e atomicidade | A implementar |
-| RNF004 | Backup/restauração | `docs/`, script de backup | Simulação de restauração | A implementar |
-| RNF005 | Tempo de resposta | Script de carga | Medição p95 documentada | A implementar |
-| RNF006 | Hash, autorização, sessão, segredos, HTTPS | `password.ts`, `session.ts`, ações/páginas | Testes negativos + checklist | Parcial |
-| RNF007 | Privacidade/minimização | Consultas/projeções, docs | Testes de acesso e inventário LGPD | Parcial |
-| RNF008 | Web/cross-browser | Docs | Teste manual + limitação | A verificar |
-| RNF009 | LGPD/CSV/documentação | Docs, CSV | Checklist + revisão | Parcial |
-| RNF010 | Ambiente/reprodutibilidade | README, docs, configs | Instalação em ambiente limpo | Parcial |
+| RF021 | Ação de confirmação com validações de tutor/tutorado/ciclo/proposta/capacidade/duplicidade | `release04-actions.ts`, `release04-model.ts` | Vitest cobre sucesso, validações, duplicidade, limite, gravação e best-effort; Playwright confirma a alocação. | Testado (Vitest e Playwright) |
+| RF022 | Ação de encerramento com motivo/data/responsável | `release04-actions.ts` | Vitest valida motivo, estado, responsável e data; Playwright verifica encerramento e confirmação. | Testado (Vitest e Playwright) |
+| RF030 | Ação de cancelamento com motivo/data/responsável | `release04-actions.ts` | Vitest valida motivo e transição; Playwright verifica cancelamento confirmado. | Testado (Vitest e Playwright) |
+| RF031 | Consulta de alocações com filtros e projeção por perfil | `release04-queries.ts`, `app/(main)/alocacoes/page.tsx` | Vitest valida filtros, vínculo e projeção; Playwright verifica alocação visível ao tutor e controles restritos. | Testado (Vitest e Playwright) |
+| RF032 | Inclusão de etapa pelo tutor da alocação | `release04-actions.ts`, `app/(main)/etapas/page.tsx` | Vitest valida ator, estado, campos e data; Playwright cobre criação e acesso do tutorado vinculado. | Testado (Vitest e Playwright) |
+| RF033 | Inclusão de reunião pelo tutor da alocação | `release04-actions.ts`, `app/(main)/reunioes/page.tsx` | Vitest valida ator, estado e campos; Playwright cobre criação e acesso do tutorado vinculado. | Testado (Vitest e Playwright) |
+| RF034 | Notificações internas em eventos mínimos | `notificacoes.ts`/estrita, ações R03/R04 | Ações R04 testam destinatários e best-effort. Lacuna de “alteração de prazo” mantida conforme D11; `PrazoAlterado` não é emitido. | Parcial (lacuna documentada) |
+| RF035 | Painel gerencial por curso/ciclo | `release04-queries.ts`, `app/(main)/painel/page.tsx` | Vitest verifica métricas, filtros, vagas globais e linha vazia; Playwright abre painel filtrado. | Testado (Vitest e Playwright) |
+| RF036 | Auditoria de contas, ciclos, solicitações, decisões e alocações | `auditoria.ts`/estrita, ações R01/R03/R04 | Vitest verifica chamada de auditoria e consulta/filtros; Playwright confirma registro de evento R04. | Parcial/Implementado (cobertura R04 verificada; outras releases não retestadas) |
+| RF037 | Consulta de etapas por perfil e vínculo | `release04-queries.ts`, `app/(main)/etapas/page.tsx` | Vitest verifica vínculo, filtros e ordenação; Playwright verifica acesso de participante e negação a terceiro. | Testado (Vitest e Playwright) |
+| RF038 | Consulta de reuniões por perfil e vínculo | `release04-queries.ts`, `app/(main)/reunioes/page.tsx` | Vitest verifica vínculo, intervalo inclusivo e ordenação; Playwright verifica acesso de participante e negação a terceiro. | Testado (Vitest e Playwright) |
+| RF039 | Consulta de notificações próprias | `release04-queries.ts`, `app/(main)/notificacoes/page.tsx` | Vitest verifica isolamento por usuário e filtro; Playwright verifica notificação gerada na confirmação. | Testado (Vitest e Playwright) |
+| RF040 | CSV do painel em UTF-8, com filtros e ordenação | `release04-queries.ts`, `app/(main)/painel/csv/route.ts` | Vitest verifica BOM, separador, CRLF, proteção de fórmula, filtros e privacidade; Playwright verifica download. | Testado (Vitest e Playwright) |
+| RF041 | Consulta de auditoria restrita à coordenação | `release04-queries.ts`, `app/(main)/auditoria/page.tsx` | Vitest verifica perfil e filtros; Playwright confirma consulta pela coordenação e rota restrita para tutor. | Testado (Vitest e Playwright) |
+| RNF001 | Erros por campo, pt-BR, preservação de dados | `release03-form.tsx`/`release03-ui.tsx` (extensão aditiva) | Componente de formulário R04 verifica erro e preservação do motivo; demais campos/rotas não cobertos aqui. | Parcial |
+| RNF002 | Teclado, rótulos, 360–1366 px | Layout e componentes | Labels exercitados no Chromium; ainda sem teste de viewports/leitor de tela ou validação WCAG completa. | Parcial |
+| RNF003 | Integridade/capacidade/concorrência | `release04-actions.ts`, `release03-store.ts` (reuso) | Vitest verifica concorrência em processo único e preservação do arquivo ao falhar rename. Sem garantia multi-processo. | Verificado no limite documentado |
+| RNF004 | Backup/restauração | `docs/`, script de backup | Sem nova simulação nesta rodada de testes R04. | Fora da suíte R04 |
+| RNF005 | Tempo de resposta | Script de carga | Sem campanha de carga R04 nesta rodada. | Fora da suíte R04 |
+| RNF006 | Hash, autorização, sessão, segredos, HTTPS | `password.ts`, `session.ts`, ações/páginas | Testes negativos de actions/consultas; E2E de rotas ainda não executado. Não revalida sessão/segredos das releases anteriores. | Parcial |
+| RNF007 | Privacidade/minimização | Consultas/projeções, docs | Vitest verifica isolamento por vínculo e projeções/CSV; revisão institucional LGPD permanece necessária. | Parcial |
+| RNF008 | Web/cross-browser | Docs | E2E configurado para Chromium; execução/cross-browser não feita. | Pendente |
+| RNF009 | LGPD/CSV/documentação | Docs, CSV | Vitest verifica formato/privacidade do CSV; checklist LGPD não foi repetido. | Parcial |
+| RNF010 | Ambiente/reprodutibilidade | README, docs, configs | Sem nova instalação em ambiente limpo nesta rodada. | Fora da suíte R04 |
 
 ---
 
@@ -849,16 +849,14 @@ Teste obrigatório:
 
 ### 12.1 Unitários (Vitest, ambiente node)
 
-Arquivos previstos:
+Arquivos adicionados:
 
 - `src/app/libs/__tests__/release04-alocacoes.test.ts`
 - `src/app/libs/__tests__/release04-etapas-reunioes.test.ts`
 - `src/app/libs/__tests__/release04-consultas.test.ts`
-- `src/app/libs/__tests__/release04-painel.test.ts`
-- `src/app/libs/__tests__/release04-notificacoes.test.ts`
-- `src/app/libs/__tests__/release04-auditoria.test.ts`
 - `src/app/libs/__tests__/release04-concorrencia.test.ts`
 - `src/app/libs/__tests__/release04-fixtures.ts`
+- `src/app/components/__tests__/release04-form.test.tsx`
 
 Casos mínimos:
 
@@ -945,6 +943,9 @@ Arquivos previstos:
 - `e2e/release04-etapas-reunioes.spec.ts`
 - `e2e/release04-painel.spec.ts`
 - `e2e/release04-notificacoes-auditoria.spec.ts`
+- `e2e/support/release04.ts`
+
+O projeto `release04` foi adicionado a `playwright.config.ts`.
 
 Jornadas:
 
@@ -963,17 +964,19 @@ cd projeto-final
 npx tsc --noEmit
 npm test -- --run --pool=threads --maxWorkers=1
 npm run build
-npm run test:e2e -- --timeout=120000
+npm run test:e2e -- --project=release04
 ```
 
 Para uma suíte específica:
 
 ```bash
 npx vitest run src/app/libs/__tests__/release04-alocacoes.test.ts
-npm run test:e2e -- --project=chromium e2e/release04-alocacoes.spec.ts
+npm run test:e2e -- --project=release04 e2e/release04-alocacoes.spec.ts
 ```
 
 Não registrar “aprovado” sem a saída real do comando.
+
+**Evidência atual (Next.js 16.4.6):** 37 testes R04 Vitest aprovados em cinco arquivos; `npx tsc --noEmit` e `npm run build` aprovados. Com `E2E_SLOW_MO=300` e `--headed`, o projeto `release04` aprovou 7/7 e o projeto `chromium` aprovou 27/27, acompanhando as interações. O build/E2E ainda emitem avisos sobre múltiplos lockfiles, `middleware` depreciado e rastreamento de filesystem dinâmico.
 
 ---
 

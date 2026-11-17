@@ -46,6 +46,18 @@ export default defineConfig({
         actionTimeout: 60_000,
       },
     },
+    {
+      name: 'release04',
+      default: false,
+      testMatch: 'release04-*.spec.ts',
+      timeout: 180_000,
+      expect: { timeout: 30_000 },
+      use: {
+        ...devices['Desktop Chrome'],
+        navigationTimeout: 120_000,
+        actionTimeout: 60_000,
+      },
+    },
   ],
   webServer: {
     command: 'npm run dev -- --hostname 127.0.0.1 --port 3109',
